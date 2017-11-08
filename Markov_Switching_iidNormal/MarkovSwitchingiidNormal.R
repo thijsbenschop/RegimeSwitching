@@ -22,18 +22,18 @@ condLogLikPar = function(theta, series){
 	# mu1, mu2, mean of distribution in resp. state 1 and 2
 	# sigma1, sigma2, variance of distribution in resp. state 1 and 2
 	# returns : value of conditional log-likelihood
-	p11 = theta[1]
-	p22 = theta[2]
-	mu1 = theta[3]
-	mu2 = theta[4] 
+	p11    = theta[1]
+	p22    = theta[2]
+	mu1    = theta[3]
+	mu2    = theta[4] 
 	sigma1 = theta[5]
 	sigma2 = theta[6]
 	
-	n 		= length(series)	# number of obs.
-	p 		= cbind(c(p11, 1-p22), c(1-p11, p22)) # transition matrix
+	n 		  = length(series)	# number of obs.
+	p 		  = cbind(c(p11, 1-p22), c(1-p11, p22)) # transition matrix
 	dzeta 	= cbind(rep(0, n), rep(0, n))
-	f 		= cbind(rep(0, n))
-	eta 	= cbind(rep(0,n), rep(0,n))
+	f 		  = cbind(rep(0, n))
+	eta 	  = cbind(rep(0,n), rep(0,n))
 	
 	dzetaInit = c((1-p[2,2])/(2-p[1,1]-p[2,2]), (1-p[1,1])/(2-p[2,2]-p[1,1]))
 	# startvalue for iterations, assuming the Markov chain is ergodic
@@ -78,18 +78,18 @@ condLogLik = function(theta, series){
 	# mu1, mu2, mean of distribution in resp. state 1 and 2
 	# sigma1, sigma2, variance of distribution in resp. state 1 and 2
 	# returns : value of conditional log-likelihood
-  p11 = theta[1]
-  p22 = theta[2]
-  mu1 = theta[3]
-  mu2 = theta[4] 
+  p11    = theta[1]
+  p22    = theta[2]
+  mu1    = theta[3]
+  mu2    = theta[4] 
   sigma1 = theta[5]
   sigma2 = theta[6]
 	
-  n 		= length(series)	# number of obs.
-  p 		= cbind(c(p11, 1-p22), c(1-p11, p22)) # transition matrix
+  n 		  = length(series)	# number of obs.
+  p       = cbind(c(p11, 1-p22), c(1-p11, p22)) # transition matrix
   dzeta 	= cbind(rep(0, n), rep(0, n))
-  f 		= cbind(rep(0, n))
-  eta 	    = cbind(rep(0,n), rep(0,n))
+  f 		  = cbind(rep(0, n))
+  eta 	  = cbind(rep(0,n), rep(0,n))
 	
 	dzetaInit = c((1-p[2,2])/(2-p[1,1]-p[2,2]), (1-p[1,1])/(2-p[2,2]-p[1,1]))
 	# startvalue for iterations, assuming the Markov chain is ergodic
@@ -136,8 +136,8 @@ logRetFirstPeriod = data[2:725,5]
 
 ## Other optimization alghorithms
 #			  p11, p22,  mu1,  mu2,  sigma1, sigma2
-lowParDE 	= c(0,   0,   -0.3, -0.3,   0,     0 )
-upParDE 	= c(1,   1,    0.3,  0.3, 0.3,   0.3 )
+lowParDE 	  = c(0,   0,   -0.3, -0.3,   0,     0 )
+upParDE 	  = c(1,   1,    0.3,  0.3, 0.3,   0.3 )
 controlDE 	= list(NP = 60, itermax = 2500)
 testDE = DEoptim(fn 		= condLogLik,
 				 lower 		= lowParDE,
@@ -156,7 +156,7 @@ dzeta 		= condLogLikPar(theta 	= parDE,
 							series 	= data[2:725, 5]) #calculate dzeta
 dzeta1 		= dzeta[[1]][,1]
 dzeta2 		= dzeta[[1]][,2]
-par(mfrow 	= c(2,1))
+par(mfrow = c(2,1))
 jan08 		= as.Date("01/01/08", "%d/%m/%y")
 dec10 		= as.Date("01/01/11", "%d/%m/%y")
 DatePlot 	= as.Date(data$Date[6:725], ,"%d/%m/%y")
@@ -164,7 +164,7 @@ DatePlot 	= as.Date(data$Date[6:725], ,"%d/%m/%y")
 plot(dzeta1[5:724]~DatePlot,
 	 type 	= "l",
 	 ylim 	= c(0.0,1.0),
-	 lwd 	= 2,
+	 lwd 	  = 2,
 	 xlab 	= "Date",
 	 ylab 	= "Regime probabilities",
 	 xaxs 	= "i",
@@ -173,7 +173,7 @@ plot(dzeta1[5:724]~DatePlot,
 
 plot(data[6:725,5]~DatePlot,
 	 type 	= "l",
-	 lwd 	= 1.2,
+	 lwd 	  = 1.2,
 	 xaxs 	= "i",
 	 yaxs 	= "i",
 	 xlim 	= c(jan08, dec10),
@@ -184,14 +184,14 @@ plot(data[6:725,5]~DatePlot,
 
 llh = condLogLik(parDE, logRetFirstPeriod)
 
-testnlm = nlm(f 		= condLogLik,
-			  p 		= c(0.7, 0.8, mean(logRetFirstPeriod), mean(logRetFirstPeriod), sd(logRetFirstPeriod), sd(logRetFirstPeriod)),
-			  series 	= logRetFirstPeriod,
-			  iterlim 	= 100)
+testnlm = nlm(f = condLogLik,
+			        p 		  = c(0.7, 0.8, mean(logRetFirstPeriod), mean(logRetFirstPeriod), sd(logRetFirstPeriod), sd(logRetFirstPeriod)),
+			        series 	= logRetFirstPeriod,
+			        iterlim = 100)
 
 testOptim = optim(f 		= condLogLik,
-				  p 		= c(0.7, 0.8, mean(logRetFirstPeriod), mean(logRetFirstPeriod), sd(logRetFirstPeriod), sd(logRetFirstPeriod)),
-				  series 	= logRetFirstPeriod)
+				          p 		= c(0.7, 0.8, mean(logRetFirstPeriod), mean(logRetFirstPeriod), sd(logRetFirstPeriod), sd(logRetFirstPeriod)),
+				          series 	= logRetFirstPeriod)
 
 parValues = testnlm$estimate
 
@@ -235,7 +235,7 @@ AIC = 2*(test2$minimum) + 2*6
 #matrix with estimate, error, estimated variance
 
 recursivePar 	= parValues 
-prevPar 		= parValues 
+prevPar 		  = parValues 
 # reestimate the parameters for the longer time series
 for (i in 726:1183){
 	reestMSNormal 	= nlm(f 		= condLogLik,
@@ -322,7 +322,7 @@ plot(pointForecastRec,
 abline(h=mean(data$logRet[726:1183]))
 
 
-estErrorRecur 	= pointForecastRec[1:458] - data$logRet[726:1183]
+estErrorRecur = pointForecastRec[1:458] - data$logRet[726:1183]
 recursiveMSE 	= (1/length(estErrorRecur)) * sum(estErrorRecur^2)
 recursiveMAE 	= (1/length(estErrorRecur)) * sum(abs(estErrorRecur))
 recursiveMSE
